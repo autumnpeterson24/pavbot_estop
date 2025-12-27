@@ -1,0 +1,33 @@
+Michael E-Stop ROS Node :D
+
+Stnadradized Architecture:
+- ROS 2 Humble, (rclpp for C++ nodes)
+- Serial Connection for Arduino Nano
+- own a ROS 2 package repo and one node
+- own a message contract (topics/services/actions) 
+
+E-Stop topics:
+- Jetson gets status of E-stop (are we triggered or nah??)
+- custom message topic to publish: [ /safety/estop/state ]
+- need a reset state? could do: [ /safety/estop/reset_request ]
+- heartbeat: [ /safety/estop/heartbeat ]
+*** /safety/estop is where you will be working with topics and you can add anything extra you might need!
+
+ROS messages you can use:
+* std_msgs/Bool (this is like a "built-in data type" for ROS that you can use)
+- True = active estop | False = inactive estop
+*** You could also use std_msgs/UInt8 if you want extra states (like heartbeat i.e. 0=OK, 1=ACTIVE, 2=UKNOWN, etc...)!! 
+ - Here is a link to all std_msgs (https://docs.ros2.org/foxy/api/std_msgs/index-msg.html)
+
+RESPONSIBILITIES:
+1. open serial port (e.g. /dev/ttyUSB0) wherever the arduino is that connects estop
+
+2. Parse data from arduino (send serial data for the ROS Node to know when estop is activated)
+- I think you can directly send serial data directly with the Arduino for the Jetson to take in with the ROS node (i.e. Serial.write()???) https://docs.arduino.cc/language-reference/en/functions/communication/serial/write/
+	 
+3. publish estop state topic: [ /safety/estop/state ], with message: [ std_msgs/Bool ]
+4. publish last seen heartbeat topic: [ /safety/estop/heartbeat ], with message type: [ std_messages/UInt8 ]
+
+5. Send status checks every x amount of Hz (like 20-50 maybe??) but send a state change IMMEDIATELY
+6. Anything else you think Jetson might need from arduino!
+
