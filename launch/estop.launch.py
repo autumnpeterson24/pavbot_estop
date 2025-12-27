@@ -4,6 +4,13 @@ You don't technically need this but it is an easy way to get the node up and run
 
 Run instructions:
     ros2 launch pav_estop estop.launch.py
+
+Check your nodes are working and publishing:
+    (in another terminal)
+    ros2 topic list
+    ros2 topic echo safety/estop
+
+    *should see a bunch of data:true*
 """
 
 from launch import LaunchDescription
