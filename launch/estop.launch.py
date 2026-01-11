@@ -19,7 +19,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     return LaunchDescription([
         Node(
-            package='pav_estop',
+            package='pavbot_estop',
             executable='estop_node',
             name='estop_node',
             output='screen',
