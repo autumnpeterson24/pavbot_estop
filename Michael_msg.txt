@@ -31,3 +31,9 @@ RESPONSIBILITIES:
 5. Send status checks every x amount of Hz (like 20-50 maybe??) but send a state change IMMEDIATELY
 6. Anything else you think Jetson might need from arduino!
 
+*** NEVER FORGET
+- if ever running anything inthe terminal to check your ros topics make sure you source your terminal with these commands:
+    source /opt/ros/humble/setup.bash
+    source ~/ros2_ws/install/setup.bash
+
+
