@@ -5,16 +5,16 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
-add_executable(estop_node src/estop_node.cpp)
+add_executable(pavbot_estop src/pavbot_estop.cpp)
 
 ament_target_dependencies(
-  estop_node
+  pavbot_estop
   rclcpp
   std_msgs
 )
 
 install(
-  TARGETS estop_node
+  TARGETS pavbot_estop
   DESTINATION lib/${PROJECT_NAME}
 )
 install(
