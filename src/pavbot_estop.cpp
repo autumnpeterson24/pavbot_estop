@@ -7,33 +7,30 @@ author: Michael Stalford
 */
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/bool.hpp>
+#include <std_msgs/msg/float32.hpp>
+
 
 class PavbotEStop : public rclcpp::Node
 {
-public:
-  PavbotEStop() : Node("pavbot_estop")
-  {
-    // Parameters
-    port = declare_parameter<std::string>("port", "/dev/ttyUSB0"); // This is is the Arduino is in the USB0 slot it's just a placeholder
-    baud = declare_parameter<int>("baud", 115200);
-    timeout_ms = declare_parameter<int>("timeout_ms", 500);
+  private:
 
-    estop_pub = create_publisher<std_msgs::msg::Bool>(
-      "/safety/estop",
-      rclcpp::QoS(1).transient_local() // a queue depth of 1 to keep the latest value :)
-    );
+  // CLASS MEMBERS ----------------------------
 
-    silly_pub = create_publisher<std_msgs::msg::Bool>("/safety/silly", rclcpp::QoS(5).transient_local() );
+  std::string port; // the port that the nano is connected to
+  int baud; //baud rate for serail communication
+  int timeout_ms;
 
-    timer = create_wall_timer( std::chrono::milliseconds(50), std::bind(&PavbotEStop::update, this) // periodic timer for constant update
-    );
+  // declare the publishers here
+  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr estop_pub;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr silly_pub; //create pub here
 
-    RCLCPP_INFO(get_logger(), "E-Stop node started"); // log that the node started :)
-  }
+  //delcare all timers here
+  rclcpp::TimerBase::SharedPtr timer;
+  rclcpp::TimerBase::SharedPtr silly_timer;
 
-private:
-  void update()
-  {
+
+  // Function using in wall timer to update at a constant hertz
+  void update() {
     /* TODO:
     1. Read serial data from arduino
     2. Parse data
@@ -46,25 +43,48 @@ private:
     msg.data = true;  // true = STOP (this will be whatever data comes from arduino)
     estop_pub->publish(msg);
 
-    std_msgs::msg::Bool msg2;
-    msg2.data = false;
-    silly_pub->publish(msg2); //pub here as well
+  }
+
+  void silly_update() {
+    // EXAMPLE
+    std_msgs::msg::Float32 float_msg;
+
+    float_msg.data = 3.14;
+    silly_pub->publish(float_msg);
+    //RCLCPP_INFO(get_logger(), "SILLY GOOFY UPDATE");
 
   }
 
-  std::string port; // the port that the nano is connected to
-  int baud; //baud rate for serail communication
-  int timeout_ms;
+public:
+// CONSTRUCTOR -----------------------------
+  PavbotEStop() : Node("pavbot_estop") {
+    // Parameters -----------------
+    port = declare_parameter<std::string>("port", "/dev/ttyUSB0"); // This is is the Arduino is in the USB0 slot it's just a placeholder
+    baud = declare_parameter<int>("baud", 115200);
+    timeout_ms = declare_parameter<int>("timeout_ms", 500);
 
-  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr estop_pub;
-  rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr silly_pub; //create pub here
+    // Publishers ------------------
+    estop_pub = create_publisher<std_msgs::msg::Bool>("/safety/estop", rclcpp::QoS(1).transient_local() // a queue depth of 1 to keep the latest value :)
+    );
+
+    silly_pub = create_publisher<std_msgs::msg::Float32>("/safety/silly", rclcpp::QoS(5).transient_local()); //every fifth instead of every 1
+
+    // timers ----------------
+    timer = create_wall_timer( std::chrono::milliseconds(50), std::bind(&PavbotEStop::update, this) // periodic timer for constant update
+    );
+
+    silly_timer = create_wall_timer(std::chrono::milliseconds(100), std::bind(&PavbotEStop::silly_update, this));
+
+    // Logging to the screen when the node is created to make sure it is there :)
+    RCLCPP_INFO(get_logger(), "E-Stop node started"); // log that the node started 
+    RCLCPP_INFO(get_logger(), "You can put whatever you want here...");
+  }
 
 
-  rclcpp::TimerBase::SharedPtr timer;
 };
 
-int main(int argc, char **argv)
-{
+
+int main(int argc, char **argv) {
 // SPINNING UP THE ROS NODE
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<PavbotEStop>());

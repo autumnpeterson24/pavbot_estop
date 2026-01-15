@@ -18,6 +18,8 @@ ROS messages you can use:
 - True = active estop | False = inactive estop
 *** You could also use std_msgs/UInt8 if you want extra states (like heartbeat i.e. 0=OK, 1=ACTIVE, 2=UKNOWN, etc...)!! 
  - Here is a link to all std_msgs (https://docs.ros2.org/foxy/api/std_msgs/index-msg.html)
+ - More Resources for rclpp: https://docs.ros.org/en/humble/p/rclcpp/generated/index.html#rclcpp-ros-client-library-for-c
+ 
 
 RESPONSIBILITIES:
 1. open serial port (e.g. /dev/ttyUSB0) wherever the arduino is that connects estop
