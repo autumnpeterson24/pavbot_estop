@@ -26,8 +26,7 @@ def generate_launch_description():
             parameters=[{
                 'port': '/dev/ttyUSB0',
                 'baud': 115200,
-                'timeout_ms': 500,
-                'silly_goofy': True
+                'timeout_ms': 500
             }]
         )
     ])

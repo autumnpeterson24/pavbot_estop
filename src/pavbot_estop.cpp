@@ -22,21 +22,21 @@ class PavbotEStop : public rclcpp::Node
 
   // declare the publishers here
   rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr estop_pub;
-  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr silly_pub; //create pub here
 
   //delcare all timers here
   rclcpp::TimerBase::SharedPtr timer;
-  rclcpp::TimerBase::SharedPtr silly_timer;
+  
 
 
   // Function using in wall timer to update at a constant hertz
   void update() {
     /* TODO:
     1. Read serial data from arduino
-    2. Parse data
+    2. Parse datas
     3. Publish std_msgs::Bool
     */
 
+    //CLCPP_INFO(get_logger(), "GPS data: test"); // temp log to show it is running
     // FAIL-SAFE DEFAULT (robot always on estop until the serial parsing is implemented ofr optimal safety)
     std_msgs::msg::Bool msg;
 
@@ -45,14 +45,8 @@ class PavbotEStop : public rclcpp::Node
 
   }
 
-  void silly_update() {
-    // EXAMPLE
-    std_msgs::msg::Float32 float_msg;
-
-    float_msg.data = 3.14;
-    silly_pub->publish(float_msg);
-    //RCLCPP_INFO(get_logger(), "SILLY GOOFY UPDATE");
-
+  void getSerial() {
+    // Magic
   }
 
 public:
@@ -67,17 +61,15 @@ public:
     estop_pub = create_publisher<std_msgs::msg::Bool>("/safety/estop", rclcpp::QoS(1).transient_local() // a queue depth of 1 to keep the latest value :)
     );
 
-    silly_pub = create_publisher<std_msgs::msg::Float32>("/safety/silly", rclcpp::QoS(5).transient_local()); //every fifth instead of every 1
 
     // timers ----------------
     timer = create_wall_timer( std::chrono::milliseconds(50), std::bind(&PavbotEStop::update, this) // periodic timer for constant update
     );
 
-    silly_timer = create_wall_timer(std::chrono::milliseconds(100), std::bind(&PavbotEStop::silly_update, this));
 
     // Logging to the screen when the node is created to make sure it is there :)
     RCLCPP_INFO(get_logger(), "E-Stop node started"); // log that the node started 
-    RCLCPP_INFO(get_logger(), "You can put whatever you want here...");
+    RCLCPP_INFO(get_logger(), "Chatbot, make me a hoot chocolate!"); // fun message
   }
 
 
