@@ -38,6 +38,7 @@ RESPONSIBILITIES:
     source /opt/ros/humble/setup.bash
     source ~/ros2_ws/install/setup.bash
 
-*** There is a ROS-micro library that has built in communication topics for Aruinos here, might be a little awkard setting up build space but could be something to look into:
-    https://micro.ros.org/docs/tutorials/core/first_application_linux/
+*** For Serial the POSIX library in ubuntu has all the serial communication needed maybe?
+https://people.na.infn.it/~garufi/didattica/CorsoAcq/SerialProgrammingInPosixOSs.pdf
+
 
